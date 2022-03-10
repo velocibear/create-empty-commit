@@ -1,5 +1,5 @@
 import * as github from '@actions/github'
-import {getInput, info, setFailed} from '@actions/core'
+import {getInput, setFailed} from '@actions/core'
 
 export async function run(): Promise<void> {
   try {
@@ -26,8 +26,6 @@ export async function run(): Promise<void> {
       data: {tree}
     } = await octokit.rest.git.getCommit({repo, owner, commit_sha})
 
-    info(`tree ${tree.sha}`)
-
     if (!tree) return
 
     const {
@@ -40,9 +38,6 @@ export async function run(): Promise<void> {
       message,
       author: {email, name}
     })
-
-    info(`newSha ${newSha}`)
-    info(`ref ${ref}`)
 
     await octokit.rest.git.updateRef({
       repo,
