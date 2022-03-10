@@ -17,22 +17,14 @@ export async function run(): Promise<void> {
     const commit_sha = payload.merge_commit_sha
     const ref = payload?.pull_request?.head.ref
 
-    info(`owner ${owner}`)
-    info(`pull_number ${pull_number}`)
-    info(`repo ${repo}`)
-
-    info(`payload ${JSON.stringify(payload)}`)
-
     if (!owner || !pull_number || !repo) return
 
     info(`commit_sha ${commit_sha}`)
     info(`ref ${ref}`)
 
-    const {
-      data: {id}
-    } = await octokit.rest.pulls.get({repo, owner, pull_number})
+    const pullRequest = await octokit.rest.pulls.get({repo, owner, pull_number})
 
-    info(`pullRequest ${id}`)
+    info(`pullRequest ${JSON.stringify(pullRequest)}`)
 
     if (!payload || !repo || !owner || !commit_sha || !ref || !pull_number)
       return

@@ -53,16 +53,12 @@ function run() {
             const pull_number = (_d = payload.issue) === null || _d === void 0 ? void 0 : _d.number;
             const commit_sha = payload.merge_commit_sha;
             const ref = (_e = payload === null || payload === void 0 ? void 0 : payload.pull_request) === null || _e === void 0 ? void 0 : _e.head.ref;
-            (0, core_1.info)(`owner ${owner}`);
-            (0, core_1.info)(`pull_number ${pull_number}`);
-            (0, core_1.info)(`repo ${repo}`);
-            (0, core_1.info)(`payload ${JSON.stringify(payload)}`);
             if (!owner || !pull_number || !repo)
                 return;
             (0, core_1.info)(`commit_sha ${commit_sha}`);
             (0, core_1.info)(`ref ${ref}`);
-            const { data: { id } } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
-            (0, core_1.info)(`pullRequest ${id}`);
+            const pullRequest = yield octokit.rest.pulls.get({ repo, owner, pull_number });
+            (0, core_1.info)(`pullRequest ${JSON.stringify(pullRequest)}`);
             if (!payload || !repo || !owner || !commit_sha || !ref || !pull_number)
                 return;
             // const commit_sha = (event?.pull_request?.head?.sha ||
