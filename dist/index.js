@@ -39,7 +39,7 @@ exports.run = void 0;
 const github = __importStar(__nccwpck_require__(5438));
 const core_1 = __nccwpck_require__(2186);
 function run() {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = (0, core_1.getInput)('token');
@@ -56,16 +56,20 @@ function run() {
             const { data } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
             const ref = (_e = data === null || data === void 0 ? void 0 : data.head) === null || _e === void 0 ? void 0 : _e.ref;
             const commit_sha = (_f = data === null || data === void 0 ? void 0 : data.head) === null || _f === void 0 ? void 0 : _f.sha;
+            const tree_sha = (_g = data === null || data === void 0 ? void 0 : data.base) === null || _g === void 0 ? void 0 : _g.sha;
             (0, core_1.info)(`commit_sha ${commit_sha}`);
             (0, core_1.info)(`ref ${ref}`);
-            if (!commit_sha || !ref)
+            if (!commit_sha || !ref || !tree_sha)
                 return;
-            const { data: { tree } } = yield octokit.rest.git.getCommit({ repo, owner, commit_sha });
+            // const {
+            //   data: {tree}
+            // } = await octokit.rest.git.getCommit({repo, owner, commit_sha})
+            // info(`tree ${tree.sha}`)
             const { data: { sha: newSha } } = yield octokit.rest.git.createCommit({
                 repo,
                 owner,
                 parents: [commit_sha],
-                tree: tree.sha,
+                tree: tree_sha,
                 message,
                 author: { email, name }
             });
