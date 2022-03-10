@@ -53,9 +53,13 @@ function run() {
             const pull_number = (_d = payload.issue) === null || _d === void 0 ? void 0 : _d.id;
             const commit_sha = payload.merge_commit_sha;
             const ref = (_e = payload === null || payload === void 0 ? void 0 : payload.pull_request) === null || _e === void 0 ? void 0 : _e.head.ref;
+            if (!owner || !pull_number || !repo)
+                return;
             (0, core_1.info)(`issueId ${pull_number}`);
             (0, core_1.info)(`commit_sha ${commit_sha}`);
             (0, core_1.info)(`ref ${ref}`);
+            const { data: { id } } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
+            (0, core_1.info)(`pullRequest ${id}`);
             if (!payload || !repo || !owner || !commit_sha || !ref || !pull_number)
                 return;
             // const commit_sha = (event?.pull_request?.head?.sha ||
@@ -63,8 +67,6 @@ function run() {
             // const ref = `heads/${event?.pull_request?.head?.ref as string}`
             // const full_repository = process.env.GITHUB_REPOSITORY as string
             // const [owner, repo] = full_repository.split('/')
-            const { data: { id } } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
-            (0, core_1.info)(`pullRequest ${id}`);
             const { data: { tree } } = yield octokit.rest.git.getCommit({ repo, owner, commit_sha });
             const { data: { sha: newSha } } = yield octokit.rest.git.createCommit({
                 repo,

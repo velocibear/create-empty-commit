@@ -17,9 +17,17 @@ export async function run(): Promise<void> {
     const commit_sha = payload.merge_commit_sha
     const ref = payload?.pull_request?.head.ref
 
+    if (!owner || !pull_number || !repo) return
+
     info(`issueId ${pull_number}`)
     info(`commit_sha ${commit_sha}`)
     info(`ref ${ref}`)
+
+    const {
+      data: {id}
+    } = await octokit.rest.pulls.get({repo, owner, pull_number})
+
+    info(`pullRequest ${id}`)
 
     if (!payload || !repo || !owner || !commit_sha || !ref || !pull_number)
       return
@@ -29,12 +37,6 @@ export async function run(): Promise<void> {
     // const ref = `heads/${event?.pull_request?.head?.ref as string}`
     // const full_repository = process.env.GITHUB_REPOSITORY as string
     // const [owner, repo] = full_repository.split('/')
-
-    const {
-      data: {id}
-    } = await octokit.rest.pulls.get({repo, owner, pull_number})
-
-    info(`pullRequest ${id}`)
 
     const {
       data: {tree}
