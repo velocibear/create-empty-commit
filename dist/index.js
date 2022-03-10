@@ -53,20 +53,14 @@ function run() {
                 return;
             const [owner, repo] = fullRepo.split('/');
             const pull_number = (_b = payload.issue) === null || _b === void 0 ? void 0 : _b.number;
-            (0, core_1.info)(`repo: ${repo}`);
-            (0, core_1.info)(`owner: ${owner}`);
-            (0, core_1.info)(`pull_number: ${pull_number}`);
             if (!owner || !pull_number || !repo)
                 return;
             const { data } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
             const ref = (_c = data === null || data === void 0 ? void 0 : data.head) === null || _c === void 0 ? void 0 : _c.ref;
             const commit_sha = data === null || data === void 0 ? void 0 : data.merge_commit_sha;
-            (0, core_1.info)(`ref: ${ref}`);
-            (0, core_1.info)(`commit_sha: ${commit_sha}`);
             if (!commit_sha || !ref)
                 return;
             const { data: { tree } } = yield octokit.rest.git.getCommit({ repo, owner, commit_sha });
-            (0, core_1.info)(`tree_sha: ${tree.sha}`);
             if (!tree)
                 return;
             const { data: { sha: newSha } } = yield octokit.rest.git.createCommit({
