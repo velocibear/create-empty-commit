@@ -14,6 +14,7 @@ export async function run(): Promise<void> {
     const owner = payload.issue?.user?.login
     const pull_number = payload.issue?.number
 
+    info(`payload: ${JSON.stringify(payload)}`)
     info(`repo: ${repo}`)
     info(`owner: ${owner}`)
     info(`pull_number: ${pull_number}`)
