@@ -14,26 +14,16 @@ export async function run(): Promise<void> {
     const owner = payload.issue?.user?.login
     const pull_number = payload.issue?.number
 
-    const commit_sha = payload.merge_commit_sha
-    const ref = payload?.pull_request?.head.ref
-
     if (!owner || !pull_number || !repo) return
+
+    const {data} = await octokit.rest.pulls.get({repo, owner, pull_number})
+    const ref = data?.head?.ref
+    const commit_sha = data?.head?.sha
 
     info(`commit_sha ${commit_sha}`)
     info(`ref ${ref}`)
 
-    const pullRequest = await octokit.rest.pulls.get({repo, owner, pull_number})
-
-    info(`pullRequest ${JSON.stringify(pullRequest)}`)
-
-    if (!payload || !repo || !owner || !commit_sha || !ref || !pull_number)
-      return
-
-    // const commit_sha = (event?.pull_request?.head?.sha ||
-    //   process.env.GITHUB_SHA) as string
-    // const ref = `heads/${event?.pull_request?.head?.ref as string}`
-    // const full_repository = process.env.GITHUB_REPOSITORY as string
-    // const [owner, repo] = full_repository.split('/')
+    if (!commit_sha || !ref) return
 
     const {
       data: {tree}

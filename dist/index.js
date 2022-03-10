@@ -39,7 +39,7 @@ exports.run = void 0;
 const github = __importStar(__nccwpck_require__(5438));
 const core_1 = __nccwpck_require__(2186);
 function run() {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = (0, core_1.getInput)('token');
@@ -51,21 +51,15 @@ function run() {
             const repo = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.name;
             const owner = (_c = (_b = payload.issue) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.login;
             const pull_number = (_d = payload.issue) === null || _d === void 0 ? void 0 : _d.number;
-            const commit_sha = payload.merge_commit_sha;
-            const ref = (_e = payload === null || payload === void 0 ? void 0 : payload.pull_request) === null || _e === void 0 ? void 0 : _e.head.ref;
             if (!owner || !pull_number || !repo)
                 return;
+            const { data } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
+            const ref = (_e = data === null || data === void 0 ? void 0 : data.head) === null || _e === void 0 ? void 0 : _e.ref;
+            const commit_sha = (_f = data === null || data === void 0 ? void 0 : data.head) === null || _f === void 0 ? void 0 : _f.sha;
             (0, core_1.info)(`commit_sha ${commit_sha}`);
             (0, core_1.info)(`ref ${ref}`);
-            const pullRequest = yield octokit.rest.pulls.get({ repo, owner, pull_number });
-            (0, core_1.info)(`pullRequest ${JSON.stringify(pullRequest)}`);
-            if (!payload || !repo || !owner || !commit_sha || !ref || !pull_number)
+            if (!commit_sha || !ref)
                 return;
-            // const commit_sha = (event?.pull_request?.head?.sha ||
-            //   process.env.GITHUB_SHA) as string
-            // const ref = `heads/${event?.pull_request?.head?.ref as string}`
-            // const full_repository = process.env.GITHUB_REPOSITORY as string
-            // const [owner, repo] = full_repository.split('/')
             const { data: { tree } } = yield octokit.rest.git.getCommit({ repo, owner, commit_sha });
             const { data: { sha: newSha } } = yield octokit.rest.git.createCommit({
                 repo,
