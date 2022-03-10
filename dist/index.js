@@ -48,7 +48,7 @@ function run() {
             const name = (0, core_1.getInput)('name');
             const octokit = github.getOctokit(token);
             const payload = github.context.payload;
-            const repo = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
+            const repo = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.name;
             const owner = (_c = (_b = payload.issue) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.login;
             const pull_number = (_d = payload.issue) === null || _d === void 0 ? void 0 : _d.number;
             const commit_sha = payload.merge_commit_sha;

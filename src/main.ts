@@ -10,7 +10,7 @@ export async function run(): Promise<void> {
     const octokit = github.getOctokit(token)
 
     const payload = github.context.payload
-    const repo = payload.repository?.full_name
+    const repo = payload.repository?.name
     const owner = payload.issue?.user?.login
     const pull_number = payload.issue?.number
 
