@@ -1,0 +1,23 @@
+on:
+  issue_comment:
+    types: [created]
+name: Skip GraphQL Contract Test
+jobs:
+  skip_graphql_contract_test:
+    name: Skip GraphQL Contract Test
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/skip_graphql_contract_test')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+    
+      - name: Add commit message
+        uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          email: chris@lattice.com
+          name: Chris
+          message: breaking_graphql_changes
