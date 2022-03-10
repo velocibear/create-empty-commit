@@ -1,5 +1,5 @@
 import * as github from '@actions/github'
-import {getInput, info, setFailed} from '@actions/core'
+import {getInput, setFailed} from '@actions/core'
 
 export async function run(): Promise<void> {
   try {
@@ -16,26 +16,17 @@ export async function run(): Promise<void> {
     const [owner, repo] = fullRepo.split('/')
     const pull_number = payload.issue?.number
 
-    info(`repo: ${repo}`)
-    info(`owner: ${owner}`)
-    info(`pull_number: ${pull_number}`)
-
     if (!owner || !pull_number || !repo) return
 
     const {data} = await octokit.rest.pulls.get({repo, owner, pull_number})
     const ref = data?.head?.ref
     const commit_sha = data?.merge_commit_sha
 
-    info(`ref: ${ref}`)
-    info(`commit_sha: ${commit_sha}`)
-
     if (!commit_sha || !ref) return
 
     const {
       data: {tree}
     } = await octokit.rest.git.getCommit({repo, owner, commit_sha})
-
-    info(`tree_sha: ${tree.sha}`)
 
     if (!tree) return
 
