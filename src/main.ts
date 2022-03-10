@@ -6,18 +6,20 @@ async function run(): Promise<void> {
     const token = getInput('token')
     const message = getInput('message')
     const email = getInput('email')
-    // const name = getInput('name')
+    const name = getInput('name')
     const octokit = github.getOctokit(token)
 
     const payload = github.context.payload
-    const repo = payload.repository
-    const owner = payload.repository?.owner
+    const repo = payload.repository?.full_name
+    const owner = payload.repository?.owner?.name
+
     const commit_sha = payload.merge_commit_sha
     const ref = payload?.pull_request?.head.ref
 
-    info(`owner ${owner}`)
     info(`commit_sha ${commit_sha}`)
     info(`ref ${ref}`)
+
+    if (!payload || !repo || !owner || !commit_sha || !ref) return
 
     // const commit_sha = (event?.pull_request?.head?.sha ||
     //   process.env.GITHUB_SHA) as string
@@ -37,7 +39,7 @@ async function run(): Promise<void> {
       parents: [commit_sha],
       tree: tree.sha,
       message,
-      author: {email}
+      author: {email, name}
     })
 
     await octokit.rest.git.updateRef({repo, owner, ref, sha: newSha})

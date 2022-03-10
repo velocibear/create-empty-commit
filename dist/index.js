@@ -38,20 +38,39 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const github = __importStar(__nccwpck_require__(5438));
 const core_1 = __nccwpck_require__(2186);
 function run() {
+    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // const token = getInput('token')
-            // const message = getInput('message')
-            // const email = getInput('email')
-            // const name = getInput('name')
-            // const octokit = github.getOctokit(token)
+            const token = (0, core_1.getInput)('token');
+            const message = (0, core_1.getInput)('message');
+            const email = (0, core_1.getInput)('email');
+            const name = (0, core_1.getInput)('name');
+            const octokit = github.getOctokit(token);
             const payload = github.context.payload;
+            const repo = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
+            const owner = (_c = (_b = payload.repository) === null || _b === void 0 ? void 0 : _b.owner) === null || _c === void 0 ? void 0 : _c.name;
+            const commit_sha = payload.merge_commit_sha;
+            const ref = (_d = payload === null || payload === void 0 ? void 0 : payload.pull_request) === null || _d === void 0 ? void 0 : _d.head.ref;
+            (0, core_1.info)(`commit_sha ${commit_sha}`);
+            (0, core_1.info)(`ref ${ref}`);
+            if (!payload || !repo || !owner || !commit_sha || !ref)
+                return;
             // const commit_sha = (event?.pull_request?.head?.sha ||
             //   process.env.GITHUB_SHA) as string
             // const ref = `heads/${event?.pull_request?.head?.ref as string}`
             // const full_repository = process.env.GITHUB_REPOSITORY as string
             // const [owner, repo] = full_repository.split('/')
-            (0, core_1.info)(`payload ${payload}`);
+            const { data: { tree } } = yield octokit.rest.git.getCommit({ repo, owner, commit_sha });
+            const { data: { sha: newSha } } = yield octokit.rest.git.createCommit({
+                repo,
+                owner,
+                parents: [commit_sha],
+                tree: tree.sha,
+                message,
+                author: { email, name }
+            });
+            yield octokit.rest.git.updateRef({ repo, owner, ref, sha: newSha });
+            (0, core_1.info)(`payload ${payload.repository}`);
         }
         catch (error) {
             if (error instanceof Error)
