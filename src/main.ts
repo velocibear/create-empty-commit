@@ -1,7 +1,7 @@
 import * as github from '@actions/github'
 import {getInput, info, setFailed} from '@actions/core'
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
     const token = getInput('token')
     const message = getInput('message')
