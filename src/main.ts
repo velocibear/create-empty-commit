@@ -21,6 +21,8 @@ export async function run(): Promise<void> {
     info(`pull_number ${pull_number}`)
     info(`repo ${repo}`)
 
+    info(`payload ${JSON.stringify(payload)}`)
+
     if (!owner || !pull_number || !repo) return
 
     info(`commit_sha ${commit_sha}`)

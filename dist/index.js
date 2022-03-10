@@ -56,6 +56,7 @@ function run() {
             (0, core_1.info)(`owner ${owner}`);
             (0, core_1.info)(`pull_number ${pull_number}`);
             (0, core_1.info)(`repo ${repo}`);
+            (0, core_1.info)(`payload ${JSON.stringify(payload)}`);
             if (!owner || !pull_number || !repo)
                 return;
             (0, core_1.info)(`commit_sha ${commit_sha}`);
