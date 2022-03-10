@@ -12,7 +12,7 @@ export async function run(): Promise<void> {
     const payload = github.context.payload
     const repo = payload.repository?.full_name
     const owner = payload.issue?.user?.login
-    const pull_number = payload.issue?.id
+    const pull_number = payload.issue?.number
 
     const commit_sha = payload.merge_commit_sha
     const ref = payload?.pull_request?.head.ref
