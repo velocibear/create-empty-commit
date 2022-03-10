@@ -17,9 +17,12 @@ export async function run(): Promise<void> {
     const commit_sha = payload.merge_commit_sha
     const ref = payload?.pull_request?.head.ref
 
+    info(`owner ${owner}`)
+    info(`pull_number ${pull_number}`)
+    info(`repo ${repo}`)
+
     if (!owner || !pull_number || !repo) return
 
-    info(`issueId ${pull_number}`)
     info(`commit_sha ${commit_sha}`)
     info(`ref ${ref}`)
 
