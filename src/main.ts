@@ -44,9 +44,12 @@ export async function run(): Promise<void> {
     info(`newSha ${newSha}`)
     info(`ref ${ref}`)
 
-    await octokit.rest.git.updateRef({repo, owner, ref, sha: newSha})
-
-    info(`payload ${payload.repository}`)
+    await octokit.rest.git.updateRef({
+      repo,
+      owner,
+      ref: `heads/${ref}`,
+      sha: newSha
+    })
   } catch (error) {
     if (error instanceof Error) setFailed(error.message)
   }
