@@ -39,7 +39,7 @@ exports.run = void 0;
 const github = __importStar(__nccwpck_require__(5438));
 const core_1 = __nccwpck_require__(2186);
 function run() {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = (0, core_1.getInput)('token');
@@ -48,17 +48,18 @@ function run() {
             const name = (0, core_1.getInput)('name');
             const octokit = github.getOctokit(token);
             const payload = github.context.payload;
-            const repo = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.name;
-            const owner = (_c = (_b = payload.issue) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.login;
-            const pull_number = (_d = payload.issue) === null || _d === void 0 ? void 0 : _d.number;
-            (0, core_1.info)(`payload: ${JSON.stringify(payload)}`);
+            const fullRepo = (_a = payload === null || payload === void 0 ? void 0 : payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
+            if (!fullRepo)
+                return;
+            const [owner, repo] = fullRepo.split('/');
+            const pull_number = (_b = payload.issue) === null || _b === void 0 ? void 0 : _b.number;
             (0, core_1.info)(`repo: ${repo}`);
             (0, core_1.info)(`owner: ${owner}`);
             (0, core_1.info)(`pull_number: ${pull_number}`);
             if (!owner || !pull_number || !repo)
                 return;
             const { data } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
-            const ref = (_e = data === null || data === void 0 ? void 0 : data.head) === null || _e === void 0 ? void 0 : _e.ref;
+            const ref = (_c = data === null || data === void 0 ? void 0 : data.head) === null || _c === void 0 ? void 0 : _c.ref;
             const commit_sha = data === null || data === void 0 ? void 0 : data.merge_commit_sha;
             (0, core_1.info)(`ref: ${ref}`);
             (0, core_1.info)(`commit_sha: ${commit_sha}`);
