@@ -59,7 +59,6 @@ function run() {
             if (!commit_sha || !ref)
                 return;
             const { data: { tree } } = yield octokit.rest.git.getCommit({ repo, owner, commit_sha });
-            (0, core_1.info)(`tree ${tree.sha}`);
             if (!tree)
                 return;
             const { data: { sha: newSha } } = yield octokit.rest.git.createCommit({
@@ -70,8 +69,6 @@ function run() {
                 message,
                 author: { email, name }
             });
-            (0, core_1.info)(`newSha ${newSha}`);
-            (0, core_1.info)(`ref ${ref}`);
             yield octokit.rest.git.updateRef({
                 repo,
                 owner,
