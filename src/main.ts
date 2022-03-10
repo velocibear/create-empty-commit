@@ -18,19 +18,18 @@ export async function run(): Promise<void> {
 
     const {data} = await octokit.rest.pulls.get({repo, owner, pull_number})
     const ref = data?.head?.ref
-    const commit_sha = data?.head?.sha
-    const tree_sha = data?.base?.sha
+    const commit_sha = data?.merge_commit_sha
 
     info(`commit_sha ${commit_sha}`)
     info(`ref ${ref}`)
 
-    if (!commit_sha || !ref || !tree_sha) return
+    if (!commit_sha || !ref) return
 
-    // const {
-    //   data: {tree}
-    // } = await octokit.rest.git.getCommit({repo, owner, commit_sha})
+    const {
+      data: {tree}
+    } = await octokit.rest.git.getCommit({repo, owner, commit_sha})
 
-    // info(`tree ${tree.sha}`)
+    info(`tree ${tree.sha}`)
 
     const {
       data: {sha: newSha}
@@ -38,7 +37,7 @@ export async function run(): Promise<void> {
       repo,
       owner,
       parents: [commit_sha],
-      tree: tree_sha,
+      tree: tree.sha,
       message,
       author: {email, name}
     })
