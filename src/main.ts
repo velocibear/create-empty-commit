@@ -20,9 +20,6 @@ export async function run(): Promise<void> {
     const ref = data?.head?.ref
     const commit_sha = data?.merge_commit_sha
 
-    info(`commit_sha ${commit_sha}`)
-    info(`ref ${ref}`)
-
     if (!commit_sha || !ref) return
 
     const {
@@ -30,6 +27,8 @@ export async function run(): Promise<void> {
     } = await octokit.rest.git.getCommit({repo, owner, commit_sha})
 
     info(`tree ${tree.sha}`)
+
+    if (!tree) return
 
     const {
       data: {sha: newSha}
@@ -41,6 +40,8 @@ export async function run(): Promise<void> {
       message,
       author: {email, name}
     })
+
+    info(`newSha ${newSha}`)
 
     await octokit.rest.git.updateRef({repo, owner, ref, sha: newSha})
 

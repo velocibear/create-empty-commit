@@ -56,12 +56,12 @@ function run() {
             const { data } = yield octokit.rest.pulls.get({ repo, owner, pull_number });
             const ref = (_e = data === null || data === void 0 ? void 0 : data.head) === null || _e === void 0 ? void 0 : _e.ref;
             const commit_sha = data === null || data === void 0 ? void 0 : data.merge_commit_sha;
-            (0, core_1.info)(`commit_sha ${commit_sha}`);
-            (0, core_1.info)(`ref ${ref}`);
             if (!commit_sha || !ref)
                 return;
             const { data: { tree } } = yield octokit.rest.git.getCommit({ repo, owner, commit_sha });
             (0, core_1.info)(`tree ${tree.sha}`);
+            if (!tree)
+                return;
             const { data: { sha: newSha } } = yield octokit.rest.git.createCommit({
                 repo,
                 owner,
@@ -70,6 +70,7 @@ function run() {
                 message,
                 author: { email, name }
             });
+            (0, core_1.info)(`newSha ${newSha}`);
             yield octokit.rest.git.updateRef({ repo, owner, ref, sha: newSha });
             (0, core_1.info)(`payload ${payload.repository}`);
         }
