@@ -3,18 +3,18 @@ description: 'Create Empty Commit'
 author: 'velocibear'
 inputs:
   token:
-      required: true
-      description: 'Github Token'
-    message:
-      required: true
-      description: 'Github Commit Message'
-      default: 'Empty Commit'
-    email:
-      required: true
-      description: 'Author Email'
-    name:
-      required: true
-      description: 'Author Name'
+    required: true
+    description: 'Github Token'
+  message:
+    required: true
+    description: 'Github Commit Message'
+    default: 'Empty Commit'
+  email:
+    required: true
+    description: 'Author Email'
+  name:
+    required: true
+    description: 'Author Name'
 runs:
   using: 'node16'
   main: 'dist/index.js'
