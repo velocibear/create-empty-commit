@@ -42,6 +42,7 @@ export async function run(): Promise<void> {
     })
 
     info(`newSha ${newSha}`)
+    info(`ref ${ref}`)
 
     await octokit.rest.git.updateRef({repo, owner, ref, sha: newSha})
 

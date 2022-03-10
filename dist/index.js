@@ -71,6 +71,7 @@ function run() {
                 author: { email, name }
             });
             (0, core_1.info)(`newSha ${newSha}`);
+            (0, core_1.info)(`ref ${ref}`);
             yield octokit.rest.git.updateRef({ repo, owner, ref, sha: newSha });
             (0, core_1.info)(`payload ${payload.repository}`);
         }
